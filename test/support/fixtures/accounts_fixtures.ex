@@ -19,12 +19,20 @@ defmodule OpsDesk.AccountsFixtures do
   end
 
   def unconfirmed_user_fixture(attrs \\ %{}) do
+    attrs = Map.new(attrs)
+    {role, attrs} = Map.pop(attrs, :role)
+
     {:ok, user} =
       attrs
       |> valid_user_attributes()
       |> Accounts.register_user()
 
-    user
+    if role do
+      {:ok, user} = Accounts.update_user_role(user, role)
+      user
+    else
+      user
+    end
   end
 
   def user_fixture(attrs \\ %{}) do

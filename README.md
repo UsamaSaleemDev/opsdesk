@@ -57,6 +57,27 @@ After registering, open the mailbox, open the confirmation/login email, and foll
 
 Protected LiveView routes use `pipe_through [:browser, :require_authenticated_user]` and `on_mount [{OpsDeskWeb.UserAuth, :require_authenticated}]`.
 
+## Roles
+
+New accounts default to `employee`. Signup cannot set a role. To promote the first admin after that user has registered:
+
+```sh
+iex -S mix
+```
+
+```elixir
+user = OpsDesk.Accounts.get_user_by_email("you@company.com")
+OpsDesk.Accounts.update_user_role(user, :admin)
+```
+
+Or:
+
+```sh
+OPSDESK_ADMIN_EMAIL=you@company.com mix run priv/repo/seeds.exs
+```
+
+Permission checks live in `OpsDesk.Accounts.Policy.can?/2`. Route/UI gating uses `OpsDeskWeb.Authorization` when a later feature needs it.
+
 
 ## Test
 

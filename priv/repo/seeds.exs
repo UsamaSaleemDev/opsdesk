@@ -2,10 +2,25 @@
 #
 #     mix run priv/repo/seeds.exs
 #
-# Inside the script, you can read and write to any of your
-# repositories directly:
+# Promote an existing user to admin (the user must already be registered):
 #
-#     OpsDesk.Repo.insert!(%OpsDesk.SomeSchema{})
+#     OPSDESK_ADMIN_EMAIL=you@company.com mix run priv/repo/seeds.exs
 #
-# We recommend using the bang functions (`insert!`, `update!`
-# and so on) as they will fail if something goes wrong.
+# Or from IEx:
+#
+#     iex -S mix
+#     user = OpsDesk.Accounts.get_user_by_email("you@company.com")
+#     OpsDesk.Accounts.update_user_role(user, :admin)
+
+email = System.get_env("OPSDESK_ADMIN_EMAIL")
+
+if is_binary(email) and email != "" do
+  case OpsDesk.Accounts.get_user_by_email(email) do
+    nil ->
+      IO.puts("No user found for #{email}. Register first, then re-run seeds.")
+
+    user ->
+      {:ok, user} = OpsDesk.Accounts.update_user_role(user, :admin)
+      IO.puts("Promoted #{user.email} to #{user.role}.")
+  end
+end

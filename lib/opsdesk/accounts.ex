@@ -80,6 +80,22 @@ defmodule OpsDesk.Accounts do
     |> Repo.insert()
   end
 
+  @doc """
+  Updates a user's role.
+
+  This is an admin-only context function. Registration and settings
+  must not call it.
+  """
+  def update_user_role(%User{} = user, role) when is_atom(role) do
+    update_user_role(user, %{role: role})
+  end
+
+  def update_user_role(%User{} = user, attrs) when is_map(attrs) do
+    user
+    |> User.role_changeset(attrs)
+    |> Repo.update()
+  end
+
   ## Settings
 
   @doc """

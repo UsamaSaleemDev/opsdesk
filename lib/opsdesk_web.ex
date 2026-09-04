@@ -86,6 +86,7 @@ defmodule OpsDeskWeb do
       import Phoenix.HTML
       # Core UI components
       import OpsDeskWeb.CoreComponents
+      import OpsDeskWeb.Authorization, only: [can?: 2]
 
       # Common modules used in templates
       alias Phoenix.LiveView.JS

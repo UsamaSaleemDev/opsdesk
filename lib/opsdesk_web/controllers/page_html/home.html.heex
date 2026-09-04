@@ -3,13 +3,13 @@
     <div class="hero-content text-center">
       <div class="max-w-md">
         <h1 class="text-4xl font-bold">Welcome to OpsDesk</h1>
-
+        
         <p class="py-6 text-base-content/70">
           A multi-tenant service desk and asset management platform.
           <span :if={!@current_scope}>Log in to continue.</span>
           <span :if={@current_scope}>You are signed in.</span>
         </p>
-
+        
         <div :if={!@current_scope} class="flex justify-center gap-2">
           <.link href={~p"/users/log-in"} class="btn btn-primary">Log in</.link>
           <.link href={~p"/users/register"} class="btn btn-ghost">Register</.link>

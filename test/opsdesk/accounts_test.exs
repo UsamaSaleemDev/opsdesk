@@ -81,9 +81,34 @@ defmodule OpsDesk.AccountsTest do
       email = unique_user_email()
       {:ok, user} = Accounts.register_user(valid_user_attributes(email: email))
       assert user.email == email
+      assert user.role == :employee
       assert is_nil(user.hashed_password)
       assert is_nil(user.confirmed_at)
       assert is_nil(user.password)
+    end
+
+    test "ignores a role submitted at registration" do
+      email = unique_user_email()
+      {:ok, user} = Accounts.register_user(%{email: email, role: :admin})
+      assert user.role == :employee
+    end
+  end
+
+  describe "update_user_role/2" do
+    test "updates the role when it is valid" do
+      user = user_fixture()
+      assert user.role == :employee
+
+      {:ok, user} = Accounts.update_user_role(user, :admin)
+      assert user.role == :admin
+      assert Accounts.get_user!(user.id).role == :admin
+    end
+
+    test "rejects an invalid role" do
+      user = user_fixture()
+      {:error, changeset} = Accounts.update_user_role(user, :superadmin)
+      assert %{role: ["is invalid"]} = errors_on(changeset)
+      assert Accounts.get_user!(user.id).role == :employee
     end
   end
 
