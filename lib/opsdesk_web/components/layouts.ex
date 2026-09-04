@@ -43,6 +43,7 @@ defmodule OpsDeskWeb.Layouts do
             <span class="text-lg font-semibold">OpsDesk</span>
           </a>
         </div>
+
         <nav class="navbar-center hidden sm:flex" aria-label="Main">
           <ul class="menu menu-horizontal gap-1 px-1">
             <li>
@@ -50,7 +51,30 @@ defmodule OpsDeskWeb.Layouts do
             </li>
           </ul>
         </nav>
-        <div class="navbar-end">
+
+        <div class="navbar-end flex flex-wrap items-center justify-end gap-1 sm:gap-2">
+          <%= if @current_scope do %>
+            <span class="hidden md:inline text-sm">{@current_scope.user.email}</span>
+            <.link href={~p"/users/settings"} class="btn btn-ghost btn-sm whitespace-nowrap">
+              Settings
+            </.link>
+
+            <.link
+              href={~p"/users/log-out"}
+              method="delete"
+              class="btn btn-ghost btn-sm whitespace-nowrap"
+            >
+              Log out
+            </.link>
+          <% else %>
+            <.link href={~p"/users/register"} class="btn btn-ghost btn-sm whitespace-nowrap">
+              Register
+            </.link>
+
+            <.link href={~p"/users/log-in"} class="btn btn-primary btn-sm whitespace-nowrap">
+              Log in
+            </.link>
+          <% end %>
           <.theme_toggle />
         </div>
       </header>
@@ -65,7 +89,6 @@ defmodule OpsDeskWeb.Layouts do
         <p>OpsDesk · Service desk and asset management</p>
       </footer>
     </div>
-
     <.flash_group flash={@flash} />
     """
   end
@@ -83,9 +106,7 @@ defmodule OpsDeskWeb.Layouts do
   def flash_group(assigns) do
     ~H"""
     <div id={@id} aria-live="polite">
-      <.flash kind={:info} flash={@flash} />
-      <.flash kind={:error} flash={@flash} />
-
+      <.flash kind={:info} flash={@flash} /> <.flash kind={:error} flash={@flash} />
       <.flash
         id="client-error"
         kind={:error}
@@ -128,7 +149,6 @@ defmodule OpsDeskWeb.Layouts do
     ~H"""
     <div class="card relative flex flex-row items-center border-2 border-base-300 bg-base-300 rounded-full">
       <div class="absolute w-1/3 h-full rounded-full border-1 border-base-200 bg-base-100 brightness-200 left-0 [[data-theme=light]_&]:left-1/3 [[data-theme=dark]_&]:left-2/3 [[data-theme-source=system]_&]:!left-0 transition-[left]" />
-
       <button
         class="flex p-2 cursor-pointer w-1/3"
         phx-click={JS.dispatch("phx:set-theme")}

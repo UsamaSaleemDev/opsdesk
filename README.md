@@ -43,7 +43,20 @@ iex -S mix phx.server
 
 Then open [http://localhost:4000](http://localhost:4000).
 
-You should see the OpsDesk header, Home nav, theme toggle (system / light / dark), and footer.
+You should see the OpsDesk header, Home nav, Register / Log in, theme toggle, and footer.
+
+## Authentication
+
+Accounts are generated with `mix phx.gen.auth`. In development, emails go to the Swoosh mailbox instead of a real SMTP server.
+
+- Register: [http://localhost:4000/users/register](http://localhost:4000/users/register)
+- Log in: [http://localhost:4000/users/log-in](http://localhost:4000/users/log-in)
+- Dev mailbox: [http://localhost:4000/dev/mailbox](http://localhost:4000/dev/mailbox)
+
+After registering, open the mailbox, open the confirmation/login email, and follow the link. Password changes and email changes live under Settings (`/users/settings`) and also send mail to the mailbox.
+
+Protected LiveView routes use `pipe_through [:browser, :require_authenticated_user]` and `on_mount [{OpsDeskWeb.UserAuth, :require_authenticated}]`.
+
 
 ## Test
 
