@@ -7,6 +7,19 @@
 # General application configuration
 import Config
 
+config :opsdesk, :scopes,
+  user: [
+    default: true,
+    module: OpsDesk.Accounts.Scope,
+    assign_key: :current_scope,
+    access_path: [:user, :id],
+    schema_key: :user_id,
+    schema_type: :id,
+    schema_table: :users,
+    test_data_fixture: OpsDesk.AccountsFixtures,
+    test_setup_helper: :register_and_log_in_user
+  ]
+
 config :opsdesk,
   namespace: OpsDesk,
   ecto_repos: [OpsDesk.Repo],
@@ -18,7 +31,7 @@ config :opsdesk, OpsDeskWeb.Endpoint,
   adapter: Bandit.PhoenixAdapter,
   render_errors: [
     formats: [html: OpsDeskWeb.ErrorHTML, json: OpsDeskWeb.ErrorJSON],
-    layout: false
+    layout: {OpsDeskWeb.Layouts, :root}
   ],
   pubsub_server: OpsDesk.PubSub,
   live_view: [signing_salt: "Sr9mEVUK"]
