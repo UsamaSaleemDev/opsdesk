@@ -2,6 +2,8 @@ defmodule OpsDesk.Accounts.User do
   use Ecto.Schema
   import Ecto.Changeset
 
+  @roles [:employee, :admin, :hr, :finance, :ceo, :management]
+
   schema "users" do
     field :email, :string
     field :password, :string, virtual: true, redact: true
@@ -9,8 +11,12 @@ defmodule OpsDesk.Accounts.User do
     field :confirmed_at, :utc_datetime
     field :authenticated_at, :utc_datetime, virtual: true
 
+    field :role, Ecto.Enum, values: @roles, default: :employee
+
     timestamps(type: :utc_datetime)
   end
+
+  def roles, do: @roles
 
   @doc """
   A user changeset for registering or changing the email.
@@ -110,6 +116,19 @@ defmodule OpsDesk.Accounts.User do
   def confirm_changeset(user) do
     now = DateTime.utc_now(:second)
     change(user, confirmed_at: now)
+  end
+
+  @doc """
+  A user changeset for changing the role.
+
+  This must not be used from registration or self-service settings.
+  Role changes go through `OpsDesk.Accounts.update_user_role/2`.
+  """
+  def role_changeset(user, attrs) do
+    user
+    |> cast(attrs, [:role])
+    |> validate_required([:role])
+    |> validate_inclusion(:role, @roles)
   end
 
   @doc """
